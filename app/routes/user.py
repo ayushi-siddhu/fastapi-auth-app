@@ -22,9 +22,10 @@ def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
 @router.post("/login")
 def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     db_user = db.query(models.User).filter(models.User.email == user.email).first()
-    
+
     if not db_user or not auth.verify_password(user.password, db_user.password):
         return {"error": "Invalid credentials"}
 
     token = auth.create_token({"user_id": db_user.id})
+
     return {"access_token": token}
